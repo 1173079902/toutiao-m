@@ -1,7 +1,7 @@
 /**
  * 封装 axios 请求模块
  */
-import axios from 'sxios'
+import axios from 'axios'
 
 // 创建一个 axios 实例
 

@@ -5,12 +5,22 @@
     <!-- 表单 -->
     <van-form @submit="onSubmit">
       <!-- 手机号 -->
-      <van-field name="手机号" placeholder="请输入手机号">
-        <i slot="left-icon" class="iconfont iconshouji"></i>
+      <van-field
+        type="number"
+        name="手机号"
+        placeholder="请输入手机号"
+        v-model="user.mobile"
+      >
+        <i slot="left-icon" class="toutiao toutiaoshouji"></i>
       </van-field>
       <!-- 验证码 -->
-      <van-field type="password" name="验证码" placeholder="请输入验证码">
-        <i slot="left-icon" class="iconfont iconyanzhengma"></i>
+      <van-field
+        type="number"
+        name="验证码"
+        placeholder="请输入验证码"
+        v-model="user.code"
+      >
+        <i slot="left-icon" class="toutiao toutiaoyanzhengma"></i>
         <template #button>
           <van-button
             class="send-sms-btn"
@@ -32,12 +42,17 @@
 </template>
 
 <script>
+import { login } from '@/api/user'
 export default {
   name: 'LoginPage',
   components: {},
   props: {},
   data() {
     return {
+      user: {
+        mobile: '13911111111',
+        code: '246810'
+      }
     }
   },
   computed: {},
@@ -45,8 +60,17 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    onSubmit(values) {
-      console.log('submit', values)
+    async onSubmit() {
+      try {
+        const res = await login(this.user)
+        console.log(res, '登入成功')
+      } catch (err) {
+        if (err.response.status === 400) {
+          console.log('手机号或验证码出错')
+        } else {
+          console.log(err, '请稍后重试')
+        }
+      }
     }
   }
 }
@@ -64,12 +88,11 @@ export default {
     background-color: #ededed;
     font-size: 22px;
     color: #666;
-    padding: 0;
   }
   .login-btn-wrap {
     padding: 53px 33px;
     .login-btn {
-      background-color: #6db4fb;
+      background-color: rgb(255 157 181);
       border: none;
     }
   }

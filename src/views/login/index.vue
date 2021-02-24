@@ -10,6 +10,8 @@
         name="手机号"
         placeholder="请输入手机号"
         v-model="user.mobile"
+        :rules="userFormRules.mobile"
+        maxlength="11"
       >
         <i slot="left-icon" class="toutiao toutiaoshouji"></i>
       </van-field>
@@ -19,6 +21,8 @@
         name="验证码"
         placeholder="请输入验证码"
         v-model="user.code"
+        :rules="userFormRules.code"
+        maxlength="6"
       >
         <i slot="left-icon" class="toutiao toutiaoyanzhengma"></i>
         <template #button>
@@ -52,6 +56,16 @@ export default {
       user: {
         mobile: '13911111111',
         code: '246810'
+      },
+      userFormRules: {
+        mobile: [
+          { required: true, message: '手机号不能为空' },
+          { pattern: /^1[3578]\d{9}$/, message: '手机号格式错误' }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空' },
+          { pattern: /^\d{6}$/, message: '验证码格式错误' }
+        ]
       }
     }
   },

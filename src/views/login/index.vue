@@ -3,30 +3,36 @@
     <!-- 头部 -->
     <van-nav-bar class="page-nav-bar" title="登录" />
     <!-- 表单 -->
-    <van-form ref="loginForm" @submit="onSubmit">
+    <van-form @submit="onSubmit" ref="loginForm">
       <!-- 手机号 -->
       <van-field
         type="number"
+        maxlength="11"
         name="mobile"
         placeholder="请输入手机号"
         v-model="user.mobile"
         :rules="userFormRules.mobile"
-        maxlength="11"
       >
         <i slot="left-icon" class="toutiao toutiaoshouji"></i>
       </van-field>
       <!-- 验证码 -->
       <van-field
         type="number"
+        maxlength="6"
         name="code"
         placeholder="请输入验证码"
         v-model="user.code"
         :rules="userFormRules.code"
-        maxlength="6"
       >
         <i slot="left-icon" class="toutiao toutiaoyanzhengma"></i>
         <template #button>
+          <van-count-down
+            v-if="isCountDownShow"
+            :time="1000 * 10"
+            @finish="isCountDownShow = false"
+          />
           <van-button
+            v-else
             class="send-sms-btn"
             native-type="button"
             round
@@ -60,14 +66,27 @@ export default {
       },
       userFormRules: {
         mobile: [
-          { required: true, message: '手机号不能为空' },
-          { pattern: /^1[3578]\d{9}$/, message: '手机号格式错误' }
+          {
+            required: true,
+            message: '手机号不能为空'
+          },
+          {
+            pattern: /^1[3578]\d{9}$/,
+            message: '手机号格式错误'
+          }
         ],
         code: [
-          { required: true, message: '验证码不能为空' },
-          { pattern: /^\d{6}$/, message: '验证码格式错误' }
+          {
+            required: true,
+            message: '验证码不能为空'
+          },
+          {
+            pattern: /^\d{6}$/,
+            message: '验证码格式错误'
+          }
         ]
-      }
+      },
+      isCountDownShow: false // 是否展示倒计时
     }
   },
   computed: {},
@@ -95,16 +114,18 @@ export default {
           this.$toast.fail('登录失败，请稍后重试')
         }
       }
+      // 4. 根据响应结果做出对应操作
     },
     async onSendSms() {
       try {
         // 1. 校验手机号，'mobile' 对应的是 name 属性值
         await this.$refs.loginForm.validate('mobile')
-        // 2. 验证通过，显示倒计时
-        // 3. 请求发送验证码
       } catch (err) {
         return console.log('验证失败', err)
       }
+      // 2. 验证通过，显示倒计时
+      this.isCountDownShow = true // 显示倒计时
+      // 3. 请求发送验证码
     }
   }
 }
@@ -122,6 +143,7 @@ export default {
     background-color: #ededed;
     font-size: 22px;
     color: #666;
+    padding: 0;
   }
   .login-btn-wrap {
     padding: 53px 33px;

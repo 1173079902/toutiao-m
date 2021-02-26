@@ -142,7 +142,7 @@ export default {
         this.$toast('发送成功')
       } catch (err) {
         this.isCountDownShow = false // 发送失败，关闭倒计时
-        if (err.response.status === 429) {
+        if (err.response && err.response.status === 429) {
           this.$toast('发送太频繁了，请稍后重试')
         } else {
           this.$toast('发送失败，请稍后重试')

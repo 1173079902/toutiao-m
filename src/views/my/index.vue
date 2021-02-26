@@ -1,7 +1,17 @@
 <template>
   <div class="my-container">
     <div class="header not-login">
-      <div class="login-btn" @click="$router.push('/login')">
+      <div
+        class="login-btn"
+        @click="
+          $router.push({
+            name: 'login',
+            query: {
+              redirect: '/my'
+            }
+          })
+        "
+      >
         <img class="mobile-img" src="~@/assets/mobile.png" alt="" />
         <span class="text">登录 / 注册</span>
       </div>
@@ -29,7 +39,7 @@ export default {
 .my-container {
   .header {
     height: 361px;
-    background: url('~@/assets/banner.png') no-repeat;
+    background: url('~@/assets/banner.jpg') no-repeat;
     background-size: cover;
   }
 

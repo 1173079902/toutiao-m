@@ -1,24 +1,7 @@
 <template>
   <div class="my-container">
-    <!-- 未登入状态 -->
-    <div class="header not-login">
-      <div
-        class="login-btn"
-        @click="
-          $router.push({
-            name: 'login',
-            query: {
-              redirect: '/my'
-            }
-          })
-        "
-      >
-        <img class="mobile-img" src="~@/assets/mobile.png" alt="" />
-        <span class="text">登录 / 注册</span>
-      </div>
-    </div>
     <!-- 已登入状态 -->
-    <div class="header user-info">
+    <div v-if="user" class="header user-info">
       <div class="base-info">
         <div class="left">
           <van-image
@@ -52,6 +35,23 @@
         </div>
       </div>
     </div>
+    <!-- 未登入状态 -->
+    <div v-else class="header not-login">
+      <div
+        class="login-btn"
+        @click="
+          $router.push({
+            name: 'login',
+            query: {
+              redirect: '/my'
+            }
+          })
+        "
+      >
+        <img class="mobile-img" src="~@/assets/mobile.png" alt="" />
+        <span class="text">登录 / 注册</span>
+      </div>
+    </div>
     <!-- 导航 -->
     <van-grid :column-num="2" class="grid-nav mb-9" clickable>
       <van-grid-item class="grid-item">
@@ -65,23 +65,17 @@
     </van-grid>
     <van-cell title="消息通知" is-link />
     <van-cell title="小智同学" is-link />
-    <van-cell class="logout-cell" title="退出登录" center />
+    <van-cell v-if="user" class="logout-cell" title="退出登录" center />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'MyPage',
-  components: {},
-  props: {},
-  data() {
-    return {}
-  },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
-  methods: {}
+  computed: {
+    ...mapState(['user'])
+  }
 }
 </script>
 

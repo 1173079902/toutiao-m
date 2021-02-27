@@ -23,10 +23,21 @@
         <article-list :channel="channel"></article-list>
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div
+        slot="nav-right"
+        class="hamburger-btn"
+        @click="isEditChannelShow = true"
+      >
         <i class="toutiao toutiaogengduo"></i>
       </div>
     </van-tabs>
+    <van-popup
+      v-model="isEditChannelShow"
+      closeable
+      position="bottom"
+      close-icon-position="top-left"
+      :style="{ height: '100%' }"
+    />
   </div>
 </template>
 
@@ -44,7 +55,8 @@ export default {
     return {
       active: 0,
       // 4. 定义数据接收频道列表
-      channels: []
+      channels: [],
+      isEditChannelShow: false
     }
   },
   computed: {},

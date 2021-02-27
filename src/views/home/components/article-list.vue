@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/article'
 export default {
   name: 'ArticleList',
   components: {},
@@ -34,29 +35,21 @@ export default {
   mounted() {},
   methods: {
     // 初始化或滚动到底部的时候会触发调用 onLoad
-    onLoad() {
-      console.log('onLoad')
-      // 1. 请求获取数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
+    async onLoad() {
+      try {
+        // 1. 请求获取数据
+        const { data } = await getArticles({
+          channel_id: this.channel.id, // 频道 id
+          timestamp: this.timestamp || Date.now(), // 时间戳，请求新的推荐数据传当前的时间戳，请求历史推荐传指定的时间戳
+          with_top: 1 // 是否包含置顶，进入页面第一次请求时要包含置顶文章，1-包含置顶，0-不包含
+        })
+        console.log(data)
         // 2. 把请求结果数据放到 list 数组中
-        for (let i = 0; i < 10; i++) {
-          // 0 + 1 = 1
-          // 1 + 1 = 2
-          // 2 + 1 = 3
-          this.list.push(this.list.length + 1)
-        }
-
         // 3. 本次数据加载结束之后要把加载状态设置为结束
-        //     loading 关闭以后才能触发下一次的加载更多
-        this.loading = false
-
         // 4. 判断数据是否全部加载完成
-        if (this.list.length >= 40) {
-          // 如果没有数据了，把 finished 设置为 true，之后不再触发加载更多
-          this.finished = true
-        }
-      }, 1000)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }

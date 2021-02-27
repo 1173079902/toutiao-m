@@ -4,6 +4,8 @@
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
+      :error.sync="error"
+      error-text="请求失败，点击重新加载"
       @load="onLoad"
     >
       <van-cell
@@ -31,7 +33,8 @@ export default {
       list: [], // 存储列表数据的数组
       loading: false, // 控制加载中 loading 状态
       finished: false, // 控制数据加载结束的状态
-      timestamp: null
+      error: false, // 是否加载失败
+      timestamp: null // 请求下一页数据的时间戳
     }
   },
   computed: {},
@@ -60,7 +63,8 @@ export default {
           this.finished = true
         }
       } catch (err) {
-        console.log(err)
+        this.loading = false // 关闭 loading 效果
+        this.error = true // 开启错误提示
       }
     }
   }

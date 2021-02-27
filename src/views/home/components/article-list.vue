@@ -103,4 +103,9 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.article-list {
+  height: 79vh;
+  overflow: auto;
+}
+</style>

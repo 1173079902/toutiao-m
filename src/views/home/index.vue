@@ -14,18 +14,10 @@
     </van-nav-bar>
     <!-- /导航栏 -->
     <!-- 频道列表 -->
-    <van-tabs
-      class="channel-tabs"
-      v-model="active"
-      animated
-      swipeable
-      swipe-threshold="4"
-    >
-      <van-tab title="标签 1">内容 1</van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
-      <van-tab title="标签 5">内容 5</van-tab>
+    <van-tabs class="channel-tabs" v-model="active" animated swipeable>
+      <van-tab v-for="item in channels" :key="item.id" :title="item.name">
+        {{ item.name }}
+      </van-tab>
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
         <i class="toutiao toutiaogengduo"></i>
@@ -35,20 +27,37 @@
 </template>
 
 <script>
+// 1. 导入 获取频道列表的方法
+import { getUserChannels } from '@/api/user'
 export default {
   name: 'HomeIndex',
   components: {},
   props: {},
   data() {
     return {
-      active: 0
+      active: 0,
+      // 4. 定义数据接收频道列表
+      channels: []
     }
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    // 3. 调用获取频道列表
+    this.loadChannels()
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    // 2. 定义加载频道列表数据的方法
+    async loadChannels() {
+      try {
+        const { data } = await getUserChannels()
+        this.channels = data.data.channels
+      } catch (err) {
+        this.$toast('获取频道列表数据失败')
+      }
+    }
+  }
 }
 </script>
 

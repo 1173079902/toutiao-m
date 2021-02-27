@@ -11,6 +11,8 @@ import './styles/index.less'
 
 import 'amfe-flexible'
 
+import './utils/dayjs'
+
 Vue.use(Vant)
 
 Vue.config.productionTip = false

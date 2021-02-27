@@ -37,7 +37,9 @@
       position="bottom"
       close-icon-position="top-left"
       :style="{ height: '100%' }"
-    />
+    >
+      <channel-edit> </channel-edit>
+    </van-popup>
   </div>
 </template>
 
@@ -45,10 +47,12 @@
 // 1. 导入 获取频道列表的方法
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from './components/channel-edit.vue'
 export default {
   name: 'HomeIndex',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data() {

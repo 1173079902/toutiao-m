@@ -15,8 +15,12 @@
     <!-- /导航栏 -->
     <!-- 频道列表 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab v-for="item in channels" :key="item.id" :title="item.name">
-        {{ item.name }}
+      <van-tab
+        v-for="channel in channels"
+        :key="channel.id"
+        :title="channel.name"
+      >
+        <article-list :channel="channel"></article-list>
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
@@ -29,9 +33,12 @@
 <script>
 // 1. 导入 获取频道列表的方法
 import { getUserChannels } from '@/api/user'
+import ArticleList from './components/article-list.vue'
 export default {
   name: 'HomeIndex',
-  components: {},
+  components: {
+    ArticleList
+  },
   props: {},
   data() {
     return {

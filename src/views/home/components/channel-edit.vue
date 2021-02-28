@@ -16,6 +16,7 @@
         text="文字"
         icon="clear"
       >
+        <!-- active 判断加高亮的索引号 -->
         <span class="text" slot="text" :class="{ active: index === active }">{{
           channel.name
         }}</span>
@@ -82,6 +83,7 @@ export default {
         color: #222;
         margin-top: 0;
       }
+      // 高亮样式
       .active {
         color: red;
       }

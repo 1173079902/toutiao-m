@@ -102,9 +102,16 @@ export default {
     onMyChannelClick(channel, index) {
       if (this.isEdit) {
         // 编辑状态下
+        if (this.fixedChannels.includes(channel.id)) {
+          return
+        }
+        if (index <= this.active) {
+          this.$emit('update-active', this.active - 1, true)
+        }
+        this.myChannels.splice(index, 1)
       } else {
         // 完成状态下
-        this.$emit('update-active', index)
+        this.$emit('update-active', index, false)
       }
     }
   }

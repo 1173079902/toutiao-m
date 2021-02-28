@@ -20,6 +20,7 @@
         v-for="(channel, index) in myChannels"
         :key="index"
         text="文字"
+        @click="onMyChannelClick(channel, index)"
       >
         <van-icon
           v-show="isEdit && !fixedChannels.includes(channel.id)"
@@ -97,6 +98,14 @@ export default {
     },
     onAddChannel(channel) {
       this.myChannels.push(channel)
+    },
+    onMyChannelClick(channel, index) {
+      if (this.isEdit) {
+        // 编辑状态下
+      } else {
+        // 完成状态下
+        this.$emit('update-active', index)
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import './styles/index.less'
 
 import 'amfe-flexible'
 
+// 加载dayjs初始配置
 import './utils/dayjs'
 
 Vue.use(Vant)

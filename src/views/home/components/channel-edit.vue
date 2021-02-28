@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import getAllChannels from '@/api/channel.js'
 export default {
   name: 'ChannelEdit',
   props: {
@@ -51,6 +52,19 @@ export default {
     active: {
       type: Number,
       required: true
+    }
+  },
+  data() {
+    return {
+      allChannels: []
+    }
+  },
+  methods: {
+    async loadAllChannels() {
+      try {
+        const { data } = await getAllChannels()
+        this.allChannels = data.data.channels
+      } catch (err) {}
     }
   }
 }

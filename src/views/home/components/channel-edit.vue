@@ -11,11 +11,14 @@
     <van-grid class="my-grid" :gutter="10">
       <van-grid-item
         class="grid-item"
-        v-for="(value, index) in 8"
+        v-for="(channel, index) in myChannels"
         :key="index"
         text="文字"
         icon="clear"
       >
+        <span class="text" slot="text" :class="{ active: index === active }">{{
+          channel.name
+        }}</span>
       </van-grid-item>
     </van-grid>
     <!-- 频道推荐标题 -->
@@ -38,7 +41,17 @@
 
 <script>
 export default {
-  name: 'ChannelEdit'
+  name: 'ChannelEdit',
+  props: {
+    myChannels: {
+      type: Array,
+      required: true
+    },
+    active: {
+      type: Number,
+      required: true
+    }
+  }
 }
 </script>
 

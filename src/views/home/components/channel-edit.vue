@@ -34,6 +34,7 @@
         :key="index"
         icon="plus"
         :text="channel.name"
+        @click="onAddChannel(channel)"
       >
       </van-grid-item>
     </van-grid>
@@ -62,6 +63,8 @@ export default {
   created() {
     this.loadAllChannels()
   },
+  // 计算属性会观测内部依赖数据的变化
+  // 如果依赖的数据发生变化，则计算属性会重新执行
   computed: {
     recommendChannels() {
       // filter 把符合条件的元素返回到新数组
@@ -79,6 +82,9 @@ export default {
       } catch (err) {
         this.$toast('获取频道列表数据失败')
       }
+    },
+    onAddChannel(channel) {
+      this.myChannels.push(channel)
     }
   }
 }

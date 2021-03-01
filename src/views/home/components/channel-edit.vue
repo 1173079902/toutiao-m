@@ -53,7 +53,9 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/channel.js'
+import { getAllChannels, addUserChannel } from '@/api/channel.js'
+import { mapState } from 'vuex'
+import { setItem } from '@/utils/storage.js'
 export default {
   name: 'ChannelEdit',
   props: {
@@ -85,7 +87,8 @@ export default {
         // find 找到符合条件的第一个就返回，后面就不再查找！
         return !this.myChannels.find(myChannel => myChannel.id === channel.id)
       })
-    }
+    },
+    ...mapState(['user'])
   },
   methods: {
     async loadAllChannels() {
@@ -96,8 +99,21 @@ export default {
         this.$toast('获取频道列表数据失败')
       }
     },
-    onAddChannel(channel) {
+    async onAddChannel(channel) {
       this.myChannels.push(channel)
+      if (this.user) {
+        try {
+          await addUserChannel({
+            id: channel.id,
+            seq: this.myChannels.length
+          })
+          this.$toast('添加成功')
+        } catch (err) {
+          this.$toast('添加失败')
+        }
+      } else {
+        setItem('TOUTIAO_CHANNELS', this.myChannels)
+      }
     },
     onMyChannelClick(channel, index) {
       if (this.isEdit) {

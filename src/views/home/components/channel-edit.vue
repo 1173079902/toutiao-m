@@ -102,6 +102,7 @@ export default {
     async onAddChannel(channel) {
       this.myChannels.push(channel)
       if (this.user) {
+        // 登入状态下
         try {
           await addUserChannel({
             id: channel.id,
@@ -112,6 +113,7 @@ export default {
           this.$toast('添加失败')
         }
       } else {
+        // 未登入状态
         setItem('TOUTIAO_CHANNELS', this.myChannels)
       }
     },

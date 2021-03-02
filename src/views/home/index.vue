@@ -53,6 +53,8 @@
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
 import ChannelEdit from './components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   components: {
@@ -68,7 +70,9 @@ export default {
       isEditChannelShow: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
   created() {
     // 3. 调用获取频道列表
@@ -79,8 +83,21 @@ export default {
     // 2. 定义加载频道列表数据的方法
     async loadChannels() {
       try {
-        const { data } = await getUserChannels()
-        this.channels = data.data.channels
+        let channels = []
+        if (this.user) {
+          const { data } = await getUserChannels()
+          channels = data.data.channels
+        } else {
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            const { data } = await getUserChannels()
+            channels = data.data.channels
+          }
+        }
+        // 将数据更新到组件中
+        this.channels = channels
       } catch (err) {
         this.$toast('获取频道列表数据失败')
       }

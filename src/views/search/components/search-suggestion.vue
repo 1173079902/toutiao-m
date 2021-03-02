@@ -11,6 +11,7 @@
 
 <script>
 import { getSearchSuggestion } from '@/api/search.js'
+import { debounce } from 'lodash'
 export default {
   name: 'SearchSuggestion',
   components: {},
@@ -29,9 +30,9 @@ export default {
   watch: {
     searchText: {
       // 监视的处理函数
-      handler(value) {
+      handler: debounce(function(value) {
         this.loadSearchSuggestion(value)
-      },
+      }, 200),
       // 首次监视触发
       immediate: true
     }

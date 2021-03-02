@@ -3,26 +3,27 @@
     <!-- 搜索栏 -->
     <form action="/">
       <van-search
-        v-model="value"
+        v-model="searchText"
         show-action
         placeholder="请输入搜索关键词"
         background="rgb(255 157 181)"
         @search="onSearch"
         @cancel="onCancel"
+        @focus="isResultShow = false"
       />
     </form>
 
-    <!-- 搜索历史记录 -->
-    <search-history />
-    <!-- /搜索历史记录 -->
+    <!-- 搜索结果 -->
+    <search-result v-if="isResultShow" />
+    <!-- /搜索结果 -->
 
     <!-- 联想建议 -->
-    <search-suggestion />
+    <search-suggestion v-else-if="searchText" />
     <!-- /联想建议 -->
 
-    <!-- 历史记录 -->
-    <search-result />
-    <!-- /历史记录 -->
+    <!-- 搜索历史记录 -->
+    <search-history v-else />
+    <!-- /搜索历史记录 -->
   </div>
 </template>
 
@@ -39,12 +40,13 @@ export default {
   },
   data() {
     return {
-      value: ''
+      searchText: '',
+      isResultShow: false
     }
   },
   methods: {
     onSearch(val) {
-      console.log(val)
+      this.isResultShow = true
     },
     onCancel() {
       this.$router.push(this.$route.query.redirect || '/')

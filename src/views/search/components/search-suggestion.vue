@@ -12,12 +12,24 @@
 export default {
   name: 'SearchSuggestion',
   components: {},
-  props: {},
+  props: {
+    searchText: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {}
   },
   computed: {},
-  watch: {},
+  watch: {
+    searchText: {
+      handler(value) {
+        console.log(value)
+      },
+      immediate: true
+    }
+  },
   created() {},
   mounted() {},
   methods: {}

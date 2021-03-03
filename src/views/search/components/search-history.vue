@@ -3,18 +3,13 @@
     <van-cell title="搜索历史">
       <span>全部删除</span>
       <span>完成</span>
-      <van-icon name="delete" />
+      <van-icon name="delete"></van-icon>
     </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
-      <van-icon name="close" />
-    </van-cell>
-    <van-cell title="hello">
+    <van-cell
+      :title="item"
+      v-for="(item, index) in searchHistories"
+      :key="index"
+    >
       <van-icon name="close" />
     </van-cell>
   </div>
@@ -23,17 +18,13 @@
 <script>
 export default {
   name: 'SearchHistory',
-  components: {},
-  props: {},
-  data() {
-    return {}
-  },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
-  methods: {}
+  props: {
+    searchHistories: {
+      type: Array,
+      required: true
+    }
+  }
 }
 </script>
 
-<style scoped lang="less"></style>
+<style lang="less" scoped></style>

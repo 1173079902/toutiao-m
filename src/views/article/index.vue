@@ -1,7 +1,7 @@
 <template>
   <div class="article-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" left-arrow title="黑马头条"></van-nav-bar>
+    <van-nav-bar class="page-nav-bar" left-arrow title="滴答滴答"></van-nav-bar>
     <!-- /导航栏 -->
 
     <div class="main-wrap">
@@ -88,7 +88,7 @@ export default {
   components: {},
   props: {
     articleId: {
-      type: [Number, String],
+      type: [Number, String, Object],
       required: true
     }
   },

@@ -14,11 +14,15 @@
     </form>
 
     <!-- 搜索结果 -->
-    <search-result v-if="isResultShow" />
+    <search-result v-if="isResultShow" :search-text="searchText" />
     <!-- /搜索结果 -->
 
     <!-- 联想建议 -->
-    <search-suggestion v-else-if="searchText" :search-text="searchText" />
+    <search-suggestion
+      @search="onSearch"
+      v-else-if="searchText"
+      :search-text="searchText"
+    />
     <!-- /联想建议 -->
 
     <!-- 搜索历史记录 -->
@@ -46,6 +50,7 @@ export default {
   },
   methods: {
     onSearch(val) {
+      this.searchText = val
       this.isResultShow = true
     },
     onCancel() {

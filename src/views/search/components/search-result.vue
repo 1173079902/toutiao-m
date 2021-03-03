@@ -15,7 +15,12 @@
 export default {
   name: 'SearchResult',
   components: {},
-  props: {},
+  props: {
+    searchText: {
+      type: String,
+      require: true
+    }
+  },
   data() {
     return {
       list: [],

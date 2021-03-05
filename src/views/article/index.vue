@@ -45,6 +45,9 @@
           ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
+        <!-- 评论区域 -->
+        <article-comment />
+        <!-- /评论区域 -->
         <!-- 底部区域 -->
         <div class="article-bottom">
           <van-button class="comment-btn" type="default" round size="small"
@@ -94,12 +97,14 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
+import ArticleComment from './components/article-comment'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    ArticleComment
   },
   props: {
     articleId: {

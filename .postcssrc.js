@@ -20,7 +20,14 @@ module.exports = {
       rootValue({ file }) {
         return file.indexOf('vant') !== -1 ? 37.5 : 75
       },
-      propList: ['*']
+      propList: ['*'],
+      'postcss-pxtorem': {
+        rootValue({ file }) {
+          return file.indexOf('vant') !== -1 ? 37.5 : 75
+        },
+        propList: ['*'],
+        exclude: 'github-markdown'
+      }
     }
   }
 }

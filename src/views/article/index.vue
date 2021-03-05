@@ -51,6 +51,7 @@
         <div
           class="article-content markdown-body"
           v-html="article.content"
+          ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
       </div>
@@ -90,6 +91,7 @@
 
 <script>
 import { getArticleById } from '@/api/article.js'
+import { ImagePreview } from 'vant'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -118,12 +120,30 @@ export default {
       try {
         const { data } = await getArticleById(this.articleId)
         this.article = data.data
+        setTimeout(() => {
+          this.previewImage()
+        }, 0)
       } catch (err) {
         if (err.response && err.response.status === 404) {
           this.errStatus = 404
         }
       }
       this.loading = false
+    },
+    previewImage() {
+      const articleContent = this.$refs['article-content']
+      const imgs = articleContent.querySelectorAll('img')
+      const images = []
+      imgs.forEach((img, index) => {
+        img.onclick = function() {
+          images.push(img.src)
+          ImagePreview({
+            images,
+            // 预览图片的起始位置
+            startPosition: index
+          })
+        }
+      })
     }
   }
 }

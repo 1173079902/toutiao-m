@@ -1,7 +1,7 @@
 <template>
   <div class="article-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" left-arrow title="滴答滴答"></van-nav-bar>
+    <van-nav-bar class="page-nav-bar" left-arrow title="黑马头条"></van-nav-bar>
     <!-- /导航栏 -->
 
     <div class="main-wrap">
@@ -30,13 +30,13 @@
           <div slot="label" class="publish-date">
             {{ article.pubdate | relativeTime }}
           </div>
-          <van-button
+          <!-- <van-button
             v-if="article.is_followed"
             class="follow-btn"
             round
             size="small"
-            :loading="followLoading"
             @click="onFollow"
+            :loading="followLoading"
             >已关注</van-button
           >
           <van-button
@@ -45,12 +45,19 @@
             type="info"
             color="#3296fa"
             round
-            :loading="followLoading"
             size="small"
             icon="plus"
             @click="onFollow"
+            :loading="followLoading"
             >关注</van-button
-          >
+          > -->
+          <!-- class 会直接作用于组件的根节点上 -->
+          <follow-user
+            class="follow-btn"
+            :is-followed="article.is_followed"
+            :user-id="article.aut_id"
+            @update-is_followed="article.is_followed = $event"
+          ></follow-user>
         </van-cell>
         <!-- /用户信息 -->
 
@@ -75,9 +82,7 @@
       <div class="error-wrap" v-else>
         <van-icon name="failure" />
         <p class="text">内容加载失败！</p>
-        <van-button class="retry-btn" @click="loadArtcileInfo"
-          >点击重试</van-button
-        >
+        <van-button class="retry-btn" @click="loadArticle">点击重试</van-button>
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
@@ -87,6 +92,7 @@
       <van-button class="comment-btn" type="default" round size="small"
         >写评论</van-button
       >
+      <!-- 这里在 info 替换成 badge -->
       <van-icon name="comment-o" badge="123" color="#777" />
       <van-icon color="#777" name="star-o" />
       <van-icon color="#777" name="good-job-o" />
@@ -97,12 +103,16 @@
 </template>
 
 <script>
-import { getArticleById } from '@/api/article.js'
+import { getArticleById } from '@/api/article'
 import { ImagePreview } from 'vant'
-import { addFollow, deleteFollow } from '@/api/user'
+import FollowUser from '@/components/follow-user'
+// import { addFollow, deleteFollow } from '@/api/user'
+// 测试 => http://localhost:8080/#/article/140911
 export default {
   name: 'ArticleIndex',
-  components: {},
+  components: {
+    FollowUser
+  },
   props: {
     articleId: {
       type: [Number, String, Object],
@@ -112,9 +122,9 @@ export default {
   data() {
     return {
       article: {}, // 文章详情
-      loading: true,
-      errStatus: 0,
-      followLoading: false
+      loading: true, // 加载中的状态
+      errStatus: 0, // 失败的状态码
+      followLoading: false // 关注按钮的 loading 状态
     }
   },
   computed: {},
@@ -122,12 +132,19 @@ export default {
   created() {
     this.loadArticle()
   },
-  mounted() {},
+  mounted() {
+    // mounted 里面也是拿不到的，因为获取数据的操作是异步（渲染又在获取数据之后）
+    // console.log(this.$refs['article-content'])
+  },
   methods: {
     async loadArticle() {
       this.loading = true
+      // console.log(this.articleId.toString(), 233)
       try {
-        const { data } = await getArticleById(this.articleId)
+        const { data } = await getArticleById(this.articleId.toString())
+        /* if (Math.random() > 0.5) {
+          JSON.parse('xxx')
+        } */
         this.article = data.data
         setTimeout(() => {
           this.previewImage()
@@ -136,7 +153,9 @@ export default {
         if (err.response && err.response.status === 404) {
           this.errStatus = 404
         }
+        console.log('获取数据失败', err)
       }
+      // 关闭 loading 状态
       this.loading = false
     },
     previewImage() {
@@ -144,25 +163,26 @@ export default {
       const imgs = articleContent.querySelectorAll('img')
       const images = []
       imgs.forEach((img, index) => {
+        images.push(img.src)
         img.onclick = function() {
-          images.push(img.src)
           ImagePreview({
             images,
-            // 预览图片的起始位置
             startPosition: index
           })
         }
       })
-    },
-    async onFollow() {
-      this.followLoading = true
+    }
+    /* async onFollow() {
+      this.followLoading = true // 打开关注按钮的 loading
       try {
         if (this.article.is_followed) {
+          // 已关注，取消关注
           await deleteFollow(this.article.aut_id)
         } else {
+          // 没有关注，添加关注
           await addFollow(this.article.aut_id)
         }
-        // 更新视图
+        // 更新视图状态
         this.article.is_followed = !this.article.is_followed
       } catch (err) {
         let message = '操作失败，请重试！'
@@ -172,13 +192,14 @@ export default {
         }
         this.$toast(message)
       }
-      this.followLoading = false
-    }
+      this.followLoading = false // 关闭按钮的 loading 状态
+    } */
   }
 }
 </script>
 
 <style scoped lang="less">
+// 测试 => http://localhost:8080/#/article/138567
 @import './github-markdown.css';
 .article-container {
   .main-wrap {
@@ -197,7 +218,6 @@ export default {
       margin: 0;
       color: #3a3a3a;
     }
-
     .user-info {
       padding: 0 32px;
       .avatar {
@@ -221,7 +241,6 @@ export default {
         height: 58px;
       }
     }
-
     .article-content {
       padding: 55px 32px;
       /deep/ p {
@@ -229,7 +248,6 @@ export default {
       }
     }
   }
-
   .loading-wrap {
     padding: 200px 32px;
     display: flex;
@@ -237,7 +255,6 @@ export default {
     justify-content: center;
     background-color: #fff;
   }
-
   .error-wrap {
     padding: 200px 32px;
     display: flex;
@@ -263,7 +280,6 @@ export default {
       color: #666666;
     }
   }
-
   .article-bottom {
     position: fixed;
     left: 0;

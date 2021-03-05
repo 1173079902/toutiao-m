@@ -52,11 +52,17 @@
             >关注</van-button
           > -->
           <!-- class 会直接作用于组件的根节点上 -->
-          <follow-user
+          <!-- <follow-user
             class="follow-btn"
             :is-followed="article.is_followed"
             :user-id="article.aut_id"
             @update-is_followed="article.is_followed = $event"
+          ></follow-user> -->
+          <!-- v-model 简写 -->
+          <follow-user
+            class="follow-btn"
+            v-model="article.is_followed"
+            :user-id="article.aut_id"
           ></follow-user>
         </van-cell>
         <!-- /用户信息 -->

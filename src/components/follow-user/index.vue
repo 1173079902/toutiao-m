@@ -1,23 +1,21 @@
 <template>
   <van-button
     v-if="isFollowed"
-    class="follow-btn"
     round
     size="small"
-    :loading="loading"
     @click="onFollow"
+    :loading="loading"
     >已关注</van-button
   >
   <van-button
     v-else
-    class="follow-btn"
     type="info"
     color="#3296fa"
     round
-    :loading="loading"
     size="small"
     icon="plus"
     @click="onFollow"
+    :loading="loading"
     >关注</van-button
   >
 </template>
@@ -26,6 +24,10 @@
 import { addFollow, deleteFollow } from '@/api/user'
 export default {
   name: 'FollowUser',
+  model: {
+    prop: 'isFollowed', // 默认是 value
+    event: 'update-is_followed' // 默认是 input
+  },
   props: {
     isFollowed: {
       type: Boolean,
@@ -41,18 +43,20 @@ export default {
       loading: false
     }
   },
-
   methods: {
     async onFollow() {
-      this.loading = true
+      this.loading = true // 打开关注按钮的 loading
       try {
         if (this.isFollowed) {
+          // 已关注，取消关注
           await deleteFollow(this.userId)
         } else {
+          // 没有关注，添加关注
           await addFollow(this.userId)
         }
-        // 更新视图
+        // 更新视图状态
         this.$emit('update-is_followed', !this.isFollowed)
+        // this.$emit('input', !this.value)
       } catch (err) {
         let message = '操作失败，请重试！'
         // 例如用户关注自己会报错
@@ -61,10 +65,8 @@ export default {
         }
         this.$toast(message)
       }
-      this.loading = false
+      this.loading = false // 关闭按钮的 loading 状态
     }
   }
 }
 </script>
-
-<style lang="less" scoped></style>

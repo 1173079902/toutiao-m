@@ -35,6 +35,7 @@
             class="follow-btn"
             round
             size="small"
+            @click="onFollow"
             >已关注</van-button
           >
           <van-button
@@ -45,6 +46,7 @@
             round
             size="small"
             icon="plus"
+            @click="onFollow"
             >关注</van-button
           >
         </van-cell>
@@ -95,6 +97,7 @@
 <script>
 import { getArticleById } from '@/api/article.js'
 import { ImagePreview } from 'vant'
+import { addFollow, deleteFollow } from '@/api/user'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -147,6 +150,24 @@ export default {
           })
         }
       })
+    },
+    async onFollow() {
+      try {
+        if (this.article.is_followed) {
+          await deleteFollow(this.article.aut_id)
+        } else {
+          await addFollow(this.article.aut_id)
+        }
+        // 更新视图
+        this.article.is_followed = !this.article.is_followed
+      } catch (err) {
+        let message = '操作失败，请重试！'
+        // 例如用户关注自己会报错
+        if (err.response && err.response.status === 400) {
+          message = '你不能关注你自己！'
+        }
+        this.$toast(message)
+      }
     }
   }
 }

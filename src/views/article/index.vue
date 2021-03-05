@@ -35,6 +35,7 @@
             class="follow-btn"
             round
             size="small"
+            :loading="followLoading"
             @click="onFollow"
             >已关注</van-button
           >
@@ -44,6 +45,7 @@
             type="info"
             color="#3296fa"
             round
+            :loading="followLoading"
             size="small"
             icon="plus"
             @click="onFollow"
@@ -111,7 +113,8 @@ export default {
     return {
       article: {}, // 文章详情
       loading: true,
-      errStatus: 0
+      errStatus: 0,
+      followLoading: false
     }
   },
   computed: {},
@@ -152,6 +155,7 @@ export default {
       })
     },
     async onFollow() {
+      this.followLoading = true
       try {
         if (this.article.is_followed) {
           await deleteFollow(this.article.aut_id)
@@ -168,6 +172,7 @@ export default {
         }
         this.$toast(message)
       }
+      this.followLoading = false
     }
   }
 }

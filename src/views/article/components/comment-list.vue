@@ -36,6 +36,9 @@ export default {
       error: false
     }
   },
+  created() {
+    this.onLoad()
+  },
   methods: {
     async onLoad() {
       try {
@@ -49,6 +52,8 @@ export default {
         // 2. 将数据添加到列表中
         const { results } = data.data
         this.list.push(...results)
+        // 把总数量传递到父组件
+        this.$emit('onload-success', data.data)
         // 3. 将 loading 设置为 false
         this.loading = false
         // 4. 判断是否还有数据

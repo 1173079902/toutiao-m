@@ -50,6 +50,7 @@
           :source="article.art_id"
           :list="commentList"
           @onload-success="totalCommentCount = $event.total_count"
+          @reply-click="onReplyClick"
         />
 
         <!-- 底部区域 -->
@@ -198,6 +199,9 @@ export default {
       this.isPostShow = false
       // 将发布内容展示到页面顶部
       this.commentList.unshift(data.new_obj)
+    },
+    onReplyClick(comment) {
+      this.isReplyShow = true
     }
   }
 }

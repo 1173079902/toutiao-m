@@ -143,6 +143,11 @@ export default {
       required: true
     }
   },
+  provide: function() {
+    return {
+      articleId: this.articleId
+    }
+  },
   data() {
     return {
       article: {}, // 文章详情

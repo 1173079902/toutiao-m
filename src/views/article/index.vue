@@ -107,8 +107,11 @@
     </div>
 
     <!-- 评论回复 -->
-    <van-popup v-model="isReplyShow" position="bottom" style="height: 95%">
-      <comment-reply :comment="currentComment"></comment-reply>
+    <van-popup v-model="isReplyShow" position="bottom" style="height: 100%">
+      <comment-reply
+        :comment="currentComment"
+        @close="isReplyShow = false"
+      ></comment-reply>
     </van-popup>
     <!-- /评论回复 -->
   </div>

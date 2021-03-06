@@ -4,15 +4,18 @@
       <van-icon slot="left" name="cross" @click="$emit('close')" />
     </van-nav-bar>
     <comment-item :comment="comment" />
+    <comment-list :source="comment.com_id" type="c" />
   </div>
 </template>
 
 <script>
 import CommentItem from './comment-item'
+import CommentList from './comment-list'
 export default {
   name: 'CommentReply',
   components: {
-    CommentItem
+    CommentItem,
+    CommentList
   },
   props: {
     comment: {

@@ -5,6 +5,7 @@
     finished-text="没有更多了"
     :error.sync="error"
     error-text="加载失败，请点击重试"
+    :immediate-check="false"
     @load="onLoad"
   >
     <comment-item
@@ -53,6 +54,7 @@ export default {
     CommentItem
   },
   created() {
+    this.loading = true
     this.onLoad()
   },
   methods: {

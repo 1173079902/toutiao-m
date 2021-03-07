@@ -41,6 +41,10 @@ const routes = [
     name: 'article',
     component: () => import('@/views/article'),
     props: true
+  },
+  {
+    path: '/user/profile',
+    component: () => import('@/views/user-profile/index.vue')
   }
 ]
 

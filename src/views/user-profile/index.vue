@@ -63,6 +63,15 @@
       />
     </van-popup>
     <!-- 编辑生日弹层 -->
+    <!-- 编辑头像 -->
+    <van-popup
+      v-model="isUpdatePhotoShow"
+      position="bottom"
+      style="height: 100%;"
+    >
+      <update-photo :img="img" />
+    </van-popup>
+    <!-- /编辑头像 -->
   </div>
 </template>
 
@@ -71,12 +80,14 @@ import { getUserProfile } from '@/api/user.js'
 import UpdateName from './components/update-name'
 import UpdateGender from './components/update-gender'
 import updateBirthdy from './components/update-birthdy.vue'
+import UpdatePhoto from './components/update-photo'
 export default {
   name: 'UserProfile',
   components: {
     UpdateName,
     UpdateGender,
-    updateBirthdy
+    updateBirthdy,
+    UpdatePhoto
   },
   data() {
     return {
@@ -84,7 +95,8 @@ export default {
       isUpdateNameShow: false,
       isUpdateGenderShow: false,
       isShowUpdateBirthdy: false,
-      img: null // 预览的图片
+      img: null, // 预览的图片
+      isUpdatePhotoShow: false
     }
   },
 
@@ -106,6 +118,11 @@ export default {
       const file = this.$refs.file.files[0]
       // 基于文章对象获取 blob 数据
       this.img = window.URL.createObjectURL(file)
+      // 展示预览图片弹出层
+      this.isUpdatePhotoShow = true
+      // file-input 如果选了同一个文件不会触发 change 事件
+      // 解决办法就是每次使用完毕，把它的 value 清空
+      this.$refs.file.value = ''
     }
   }
 }

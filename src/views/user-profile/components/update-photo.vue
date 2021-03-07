@@ -25,16 +25,13 @@ export default {
   mounted() {
     const image = this.$refs.img
     const cropper = new Cropper(image, {
-      aspectRatio: 16 / 9,
-      crop(event) {
-        console.log(event.detail.x)
-        console.log(event.detail.y)
-        console.log(event.detail.width)
-        console.log(event.detail.height)
-        console.log(event.detail.rotate)
-        console.log(event.detail.scaleX)
-        console.log(event.detail.scaleY)
-      }
+      viewMode: 1, // 只能在裁剪的图片范围内移动
+      dragMode: 'move', // 画布和图片都可以移动
+      aspectRatio: 1, // 裁剪区默认正方形
+      autoCropArea: 1, // 自动调整裁剪图片
+      cropBoxMovable: false, // 禁止裁剪区移动
+      cropBoxResizable: false, // 禁止裁剪区缩放
+      background: false // 关闭默认背景
     })
     console.log(cropper)
   },

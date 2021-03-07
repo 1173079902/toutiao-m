@@ -27,7 +27,7 @@
       style="height: 100%;"
       position="bottom"
     >
-      hello
+      <update-name />
     </van-popup>
     <!-- /编辑昵称 -->
   </div>
@@ -35,7 +35,12 @@
 
 <script>
 import { getUserProfile } from '@/api/user.js'
+import UpdateName from './components/update-name'
 export default {
+  name: 'UserProfile',
+  components: {
+    UpdateName
+  },
   data() {
     return {
       user: {}, // 个人信息

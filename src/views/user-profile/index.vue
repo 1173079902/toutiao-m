@@ -24,7 +24,12 @@
       is-link
       @click="isUpdateGenderShow = true"
     />
-    <van-cell title="生日" :value="user.birthday" is-link />
+    <van-cell
+      title="生日"
+      :value="user.birthday"
+      is-link
+      @click="isShowUpdateBirthdy = true"
+    />
     <!-- /个人信息 -->
     <!-- 编辑昵称 -->
     <van-popup
@@ -48,6 +53,11 @@
       />
     </van-popup>
     <!-- /编辑性别 -->
+    <!-- 编辑生日弹层 -->
+    <van-popup v-model="isShowUpdateBirthdy" position="bottom">
+      <update-birthdy />
+    </van-popup>
+    <!-- 编辑生日弹层 -->
   </div>
 </template>
 
@@ -55,17 +65,20 @@
 import { getUserProfile } from '@/api/user.js'
 import UpdateName from './components/update-name'
 import UpdateGender from './components/update-gender'
+import updateBirthdy from './components/update-birthdy.vue'
 export default {
   name: 'UserProfile',
   components: {
     UpdateName,
-    UpdateGender
+    UpdateGender,
+    updateBirthdy
   },
   data() {
     return {
       user: {}, // 个人信息
       isUpdateNameShow: false,
-      isUpdateGenderShow: false
+      isUpdateGenderShow: false,
+      isShowUpdateBirthdy: false
     }
   },
 

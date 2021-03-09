@@ -1,10 +1,10 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
     <van-pull-refresh
-      :success-text="refreshSuccessText"
-      :success-duration="1500"
       v-model="isRefreshLoading"
       @refresh="onRefresh"
+      :success-text="refreshSuccessText"
+      :success-duration="1500"
     >
       <van-list
         v-model="loading"
@@ -14,6 +14,11 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
+        <!-- <van-cell
+          v-for="(article, index) in list"
+          :key="index"
+          :title="article.title"
+        /> -->
         <article-item
           v-for="(article, index) in list"
           :key="index"
@@ -27,6 +32,7 @@
 <script>
 import { getArticles } from '@/api/article'
 import ArticleItem from '@/components/article-item'
+import { debounce } from 'lodash'
 export default {
   name: 'ArticleList',
   components: {
@@ -41,74 +47,97 @@ export default {
   data() {
     return {
       list: [], // 存储列表数据的数组
-      loading: false, // 控制加载中 loading 状态
-      finished: false, // 控制数据加载结束的状态
-      error: false, // 是否加载失败
-      timestamp: null, // 请求下一页数据的时间戳
-      isRefreshLoading: false,
-      refreshSuccessText: ''
+      loading: false, // 控制加载中 loading 状态，默认不 loading
+      finished: false, // 数据是否加载完成
+      timestamp: null, // 请求获取下一页数据的时间戳
+      error: false, // 控制列表失败的提示状态
+      isRefreshLoading: false, // 控制下拉刷新的 loading 状态
+      refreshSuccessText: '刷新成功', // 下拉刷新成功提示文本
+      scrollT: 0
     }
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
   methods: {
-    // 初始化或滚动到底部的时候会触发调用 onLoad
     async onLoad() {
       try {
         // 1. 请求获取数据
         const { data } = await getArticles({
-          channel_id: this.channel.id, // 频道 id
-          timestamp: this.timestamp || Date.now(), // 时间戳，请求新的推荐数据传当前的时间戳，请求历史推荐传指定的时间戳
-          with_top: 1 // 是否包含置顶，进入页面第一次请求时要包含置顶文章，1-包含置顶，0-不包含
+          channel_id: this.channel.id, // 频道 ID
+          // 请求数据的页码，请求第 1 页数据，用当前最新时间戳
+          // 用于请求之后数据的时间戳会在当前请求的返回值中给出
+          timestamp: Date.now(),
+          with_top: 1 // 是否包含置顶
         })
+        // 模拟随机失败的状态
+        /* if (Math.random() > 0.5) {
+          JSON.parse('xxx')
+        } */
         // 2. 把请求结果数据放到 list 数组中
         const { results } = data.data
         this.list.push(...results)
-        // 3. 本次数据加载结束之后要把加载状态设置为结束
+        // 3. 本次数据加载完毕后要把 loading 设置为 false，loading 关闭后才能触发下一次的加载更多
         this.loading = false
-        // 4. 判断数据是否全部加载完成
+        // 4. 数据加载完毕后，要把 finished 设置为 true，不再触发加载更多了
         if (results.length) {
+          // 更新时间戳，用于获取下一页数据
           this.timestamp = data.data.pre_timestamp
         } else {
+          // 没有数据了
           this.finished = true
         }
       } catch (err) {
-        this.loading = false // 关闭 loading 效果
-        this.error = true // 开启错误提示
+        // 展示错误提示状态
+        this.error = true
+        // 请求失败了，loading 也需要关闭
+        this.loading = false
       }
     },
-    // 当触发下拉刷新的时候调用该函数
     async onRefresh() {
       try {
-        // 1. 请求获取数据
+        // 请求获取数据
         const { data } = await getArticles({
-          channel_id: this.channel.id, // 频道 id
-          timestamp: Date.now(), // 下拉刷新每次都应该获取最新数据
-          with_top: 1 // 是否包含置顶，进入页面第一次请求时要包含置顶文章，1-包含置顶，0-不包含
+          channel_id: this.channel.id,
+          timestamp: Date.now(),
+          with_top: 1
         })
-
-        // 2. 将数据追加到列表的顶部
+        /* if (Math.random() > 0.5) {
+          JSON.parse('xxx')
+        } */
+        // 将数据追加到列表的顶部
         const { results } = data.data
         this.list.unshift(...results)
-        // 3. 关闭下拉刷新的 loading 状态
+        // 关闭下拉刷新的 loading 状态
         this.isRefreshLoading = false
-        // 提示成功
+        // 更新下拉刷新成功提示的文本
         this.refreshSuccessText = `刷新成功，更新了${results.length}条数据`
       } catch (err) {
-        console.log(err)
-        this.$toast('刷新失败')
-        this.isRefreshLoading = false // 关闭下拉刷新的 loading 状态
+        // 关闭下拉刷新的 loading 状态
+        this.isRefreshLoading = false
+        // 更新下拉刷新成功提示的文本
+        this.refreshSuccessText = '刷新失败'
       }
     }
+  },
+  mounted() {
+    // 1. 滚动的时候记录一下滚动的位置
+    const articleList = this.$refs['article-list']
+    articleList.onscroll = debounce(() => {
+      this.scrollT = articleList.scrollTop
+    }, 100)
+  },
+  activated() {
+    // 从缓存当中激活的时候触发
+    // 2. 当组件从缓存列表当中激活的时候，把记录的滚动的位置给 article-list 的 scrollTop
+    this.$refs['article-list'].scrollTop = this.scrollT
+  },
+  deactivated() {
+    // 从缓存当中失活的时候触发
   }
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .article-list {
   height: 79vh;
-  overflow: auto;
+  overflow-y: auto;
 }
 </style>

@@ -117,6 +117,8 @@ export default {
         // 设置数据到 Vuex
         this.$store.commit('setUser', data.data)
         this.$toast.success('登录成功')
+        // 清除 LayoutIndex 缓存
+        this.$store.commit('removeCachePage', 'LayoutIndex')
         this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
         if (err.response.status === 400) {

@@ -180,6 +180,7 @@ export default {
           JSON.parse('xxx')
         } */
         this.article = data.data
+        this.article.attitude = this.article.attitude || -1
         setTimeout(() => {
           this.previewImage()
         }, 0)

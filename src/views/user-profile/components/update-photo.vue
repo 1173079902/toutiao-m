@@ -11,6 +11,7 @@
 <script>
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
+import { updateUserPhoto } from '@/api/user'
 export default {
   name: 'UpdatePhoto',
   props: {
@@ -26,7 +27,7 @@ export default {
   },
   mounted() {
     const image = this.$refs.img
-    const cropper = new Cropper(image, {
+    this.cropper = new Cropper(image, {
       viewMode: 1, // 只能在裁剪的图片范围内移动
       dragMode: 'move', // 画布和图片都可以移动
       aspectRatio: 1, // 裁剪区默认正方形
@@ -35,7 +36,6 @@ export default {
       cropBoxResizable: false, // 禁止裁剪区缩放
       background: false // 关闭默认背景
     })
-    console.log(cropper)
   },
   methods: {
     onConfirm() {
@@ -43,8 +43,25 @@ export default {
       // console.log(this.cropper.getData())
       // 纯客户端的裁切使用 getCroppedCanvas 获取裁切的文件对象
       this.cropper.getCroppedCanvas().toBlob(blob => {
-        console.log(blob)
+        this.updateUserPhoto(blob)
       })
+    },
+    async updateUserPhoto(blob) {
+      this.$toast.loading({
+        message: '保存中...',
+        forbidClick: true, // 禁止背景点击
+        duration: 0 // 持续展示
+      })
+      try {
+        const formData = new FormData()
+        formData.append('photo', blob)
+        const { data } = await updateUserPhoto(formData)
+        this.$emit('close')
+        this.$emit('update-photo', data.data.photo)
+        this.$toast.success('更新成功')
+      } catch (err) {
+        this.$toast.fail('更新失败')
+      }
     }
   }
 }
